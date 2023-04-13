@@ -273,21 +273,22 @@ echo -e "\nexit 0\n" >> /etc/rc.local
 fi
 
 echo "Создаем службу 3proxy.service"
-touch /etc/systemd/system/3proxy.service
-echo "[Unit]" >> /etc/systemd/system/3proxy.service
-echo "Description=3proxy proxy Server" >> /etc/systemd/system/3proxy.service
-echo "[Service]" >> /etc/systemd/system/3proxy.service
-echo "Type=forking" >> /etc/systemd/system/3proxy.service
-echo "ExecStart=/root/3proxy/bin/3proxy /root/3proxy/3proxy.cfg" >> /etc/systemd/system/3proxy.service
-echo "[Install]" >> /etc/systemd/system/3proxy.service
-echo "WantedBy=multi-user.target" >> /etc/systemd/system/3proxy.service
+cat > /etc/systemd/system/3proxy.service << EOF
+[Unit]
+Description=3proxy proxy Server
+[Service]
+Type=forking
+ExecStart=/root/3proxy/bin/3proxy /root/3proxy/3proxy.cfg
+[Install]
+WantedBy=multi-user.target
+EOF
 
 systemctl daemon-reload
 systemctl enable 3proxy.service
 systemctl start 3proxy.service
 
 if [[ "$rotation" != [y] ]] && [[ "$rotation" != [Y] ]];
-	then echo "3proxy.service"
+	then echo "Deny rotation"
 	else
 cat > /root/3proxy/3proxy.sh << EOF
 #!/bin/bash
