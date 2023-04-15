@@ -214,10 +214,10 @@ fi
 ip4address=$(hostname -i)
 echo "Создания файла с данными для подключения - $ip4address.list"
 proxyport1=$(($port - 1 ))
-touch -f /root/test/$ip4address.list
+touch -f /root/$ip4address.list
 for ((i=0; i < $MAXCOUNT; i++)); do
 proxyport1=$(($proxyport1 + 1))
-echo "$ip4address:$proxyport1@$proxy_login:$proxy_pass" >> /root/test/$ip4address.list
+echo "$ip4address:$proxyport1@$proxy_login:$proxy_pass" >> /root/$ip4address.list
 done
 
 echo "Конфигурирование systemd"
