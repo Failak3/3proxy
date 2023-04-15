@@ -221,7 +221,7 @@ echo "$ip4address:$proxyport1@$proxy_login:$proxy_pass" >> /root/$ip4address.lis
 done
 
 echo "Конфигурирование systemd"
-sed -i 's/#DefaultTasksMax=.*/#DefaultTasksMax=30000/' /etc/systemd/system.conf
+sed -i 's/#DefaultTasksMax=.*/DefaultTasksMax=30000/' /etc/systemd/system.conf
 
 
 echo "Конфигурирование rc.local"
