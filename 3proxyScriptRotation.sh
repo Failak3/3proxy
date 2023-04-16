@@ -84,7 +84,6 @@ sleep 5
 ip -6 route add default via ${base_net}1 dev eth0
 ip -6 route add local ${base_net}/${mask} dev lo
 
-echo "Копирование исполняемых файлов"
 
 if [ -f /root/3proxy.tar ]; then
    echo "Архив 3proxy.tar уже скачан, продолжаем настройку..."
@@ -99,6 +98,18 @@ else
    echo "Архив ndppd.tar отсутствует, скачиваем..."
    wget --no-check-certificate https://blog.vpsville.ru/uploads/ndppd.tar; tar -xvf ndppd.tar
 fi
+
+if [ -f /root/3proxy/3proxy.cfg ];
+	then echo "Обнаружен конфиг 3proxy.cfg. Удаляем."
+		cat /dev/null > /root/3proxy/3proxy.cfg
+	 	cat /dev/null > /root/3proxy/3proxy.sh
+		cat /dev/null > /root/3proxy/random.sh
+		cat /dev/null > /root/3proxy/rotate.sh
+		cat /dev/null > /etc/rc.local
+		cat /dev/null > /var/spool/cron/crontabs/root
+	else echo "Конфиг 3proxy.cfg отсутствует. Первичная настройка."
+fi
+
 
 
 echo "Конфигурирование ndppd"
