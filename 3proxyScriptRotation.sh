@@ -62,12 +62,12 @@ timerrotation () {
 startrotation () {
 echo "Использовать ротацию? [Y/N]"
 read rotation
-if [[ "$rotation" != [y] ]] && [[ "$rotation" != [Y] ]] && [[ "$rotation" != [n] ]] && [[ "$rotation" != [N] ]];
+if [[ "$rotation" != [yY] ]] && [[ "$rotation" != [nN] ]];
 then
         echo "Неккоректно введенные данные"
                 startrotation
 else
-        if [[ "$rotation" != [Y] ]] && [[ "$rotation" != [y] ]];
+        if [[ "$rotation" != [Yy] ]];
                 then echo "Вы отказались от использования ротации"
                 else echo "Вы будете использовать ротацию"
                         timerrotation
@@ -108,7 +108,7 @@ cat >/root/ndppd/ndppd.conf <<EOL
 route-ttl 30000
 proxy eth0 {
    router no
-   timeout 500   
+   timeout 500
    ttl 30000
    rule __NETWORK__ {
       static
@@ -213,7 +213,7 @@ fi
 
 ip4address=$(hostname -i)
 echo "Создания файла с данными для подключения - $ip4address.list"
-proxyport1=$(($port - 1 ))
+proxyport1=$(($proxy_port - 1 ))
 touch -f /root/$ip4address.list
 for ((i=0; i < $MAXCOUNT; i++)); do
 proxyport1=$(($proxyport1 + 1))
@@ -296,7 +296,7 @@ systemctl daemon-reload
 systemctl enable 3proxy.service
 systemctl start 3proxy.service
 
-if [[ "$rotation" != [y] ]] && [[ "$rotation" != [Y] ]];
+if [[ "$rotation" != [yY] ]];
 	then echo "Deny rotation"
 	else
 cat > /root/3proxy/3proxy.sh << EOF
@@ -334,7 +334,7 @@ cat > /root/3proxy/random.sh << EOF
 #!/bin/bash
 mask=$mask
 array=( 1 2 3 4 5 6 7 8 9 0 a b c d e f )
-MAXCOUNT=1000
+MAXCOUNT=$MAXCOUNT
 count=1
 network=${base_net%::*}
 rnd_ip_block ()
