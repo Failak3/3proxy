@@ -64,6 +64,11 @@ read proxytype
 
 prxtp
 
+if [[ $proxytype == "http" ]];
+        then proxytype=proxy
+        else proxytype=socks
+fi
+
 base_net=`echo $network | awk -F/ '{print $1}'`
 base_net1=`echo $network_mask | awk -F/ '{print $1}'`
 
