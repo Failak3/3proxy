@@ -47,6 +47,23 @@ read proxy_pass
 echo "Введите начальный порт для прокси"
 read proxy_port
 
+prxtp () {
+
+
+
+
+echo "Какой тип прокси вы хотите использовать?"
+echo "http (рекомендуется) или socks"
+read proxytype
+	if [[ $proxytype != "socks" ]] && [[ $proxytype != "http" ]]
+		then echo "Введите http или socks!"
+			prxtp
+		else echo "Вы будете использовать $proxytype прокси"
+
+	fi }
+
+prxtp
+
 base_net=`echo $network | awk -F/ '{print $1}'`
 base_net1=`echo $network_mask | awk -F/ '{print $1}'`
 
@@ -201,7 +218,7 @@ ip4_addr=`ip -4 addr sh dev eth0|grep inet |awk '{print $2}'`
 port=${proxy_port}
 count=1
 for i in `cat /root/ip.list`; do
-    echo "proxy -6 -s0 -n -a -p$port -i$ip4_addr -e$i" >> /root/3proxy/3proxy.cfg
+    echo "$proxytype -6 -s0 -n -a -p$port -i$ip4_addr -e$i" >> /root/3proxy/3proxy.cfg
     ((port+=1))
     ((count+=1))
 done
@@ -292,6 +309,11 @@ echo -e "\nexit 0\n" >> /etc/rc.local
 /bin/chmod +x /etc/rc.local
 fi
 
+echo "sleep 10" >> /etc/rc.local
+echo "systemctl stop 3proxy.service" >> /etc/rc.local
+echo "sleep 10"
+echo "systemctl start 3proxy.service" >> /etc/rc.local
+
 echo "Создаем службу 3proxy.service"
 cat > /etc/systemd/system/3proxy.service << EOF
 [Unit]
@@ -328,7 +350,7 @@ ip4_addr=\$(ip -4 addr sh dev eth0|grep inet |awk '{print \$2}')
 port=$proxy_port
 count=1
 for i in \$(cat /root/3proxy/ip.list); do
-    echo "proxy -6 -n -a -p\$port -i\$ip4_addr -e\$i"
+    echo "$proxytype -6 -n -a -p\$port -i\$ip4_addr -e\$i"
     ((port+=1))
     ((count+=1))
     if [ \$count -eq 10001 ]; then
@@ -399,7 +421,8 @@ cat > /root/3proxy/rotate.sh << EOF
 
 /root/3proxy/random.sh > /root/3proxy/ip.list
 /root/3proxy/3proxy.sh > /root/3proxy/3proxy.cfg
-systemctl restart 3proxy
+systemctl stop 3proxy.service
+systemctl start 3proxy.service
 
 EOF
 
