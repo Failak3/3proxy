@@ -325,7 +325,17 @@ cat > /etc/systemd/system/3proxy.service << EOF
 Description=3proxy proxy Server
 [Service]
 Type=forking
+OOMScoreAdjust=-1000
+LimitNOFILE=65536
+LimitNPROC=65536
+LimitSIGPENDING=65536
 ExecStart=/root/3proxy/bin/3proxy /root/3proxy/3proxy.cfg
+ExecStop=/usr/bin/killall 3proxy
+ExecReload=/usr/bin/killall 3proxy && /home/3proxy/3proxy /home/3proxy/3proxy.cfg
+TimeoutSec=1
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=3s
 [Install]
 WantedBy=multi-user.target
 EOF
